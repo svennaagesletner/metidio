@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { signOut } from "@/auth";
 
 
-const SignOutButton = async ({signOut} : {signOut: () => void}) => {    
+const SignOutButton = ({signOut} : {signOut: () => void}) => {    
     return (
              <Button onClick={() => {
                 signOut()}}>Logg ut</Button>
