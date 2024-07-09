@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+import bcrypt from "bcryptjs"
 import { NextResponse } from "next/server"
 import db from "@/lib/prismadb";
 
