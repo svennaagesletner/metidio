@@ -1,0 +1,200 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  Guest
+  Teacher
+  Adviser
+  SchoolLeader
+  SchoolAdmin
+  MunicipalityAdmin
+  SuperAdmin
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String?
+  firstName String?
+  lastName  String?
+  role      Role    @default(Guest)
+  isActive    Boolean @default(true)
+
+  hashedPassword  String?
+  email           String    @unique
+  emailVerified   DateTime?
+  isEmailVerified Boolean   @default(false)
+
+  image String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  schoolId String? @db.ObjectId
+
+  municipality   Municipality? @relation(name: "UserMunicipality", fields: [municipalityId], references: [id], onDelete: Cascade)
+  municipalityId String?       @db.ObjectId
+
+  superAdminMunicipality   Municipality[] @relation(name: "UsersSuperAdminMunicipalities", fields: [superAdminMunicipalityIds], references: [id])
+  superAdminMunicipalityIds String[]       @db.ObjectId
+
+  superAdminSchools  School[] @relation(name: "UserSuperAdminSchools", fields: [superAdminSchoolsIds], references: [id])
+  superAdminSchoolsIds String[]       @db.ObjectId
+
+  accounts Account[]
+  sessions Session[]
+  logs     Log[]
+
+  @@index([firstName, lastName])
+}
+
+model Municipality {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  name    String  @unique
+  logoUrl String?
+  isActive  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  schools School[] @relation("school")
+  schoolIds String[] @db.ObjectId
+
+  users   User[]   @relation(name: "UserMunicipality")
+  userIds String[] @db.ObjectId
+
+  superAdmins   User[]   @relation(name: "UsersSuperAdminMunicipalities", fields: [superAdminIds], references: [id])
+  superAdminIds String[] @db.ObjectId
+}
+
+model School {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  name       String  @unique
+  address    String?
+  city       String?
+  postalCode String?
+  country    String? @default("Norge")
+  isActive   Boolean @default(true)
+
+  organizationNumber Int?
+  departments        String[]
+
+  isPrimary    Boolean?
+  isSecondary  Boolean?
+  isHighSchool Boolean?
+
+  functions String[]
+
+  createdAt DateTime     @default(now())
+  updatedAt DateTime        @updatedAt
+  createdBy   String?       @db.ObjectId
+  updatedBy   String?       @db.ObjectId
+
+  municipality   Municipality @relation(name: "school", fields: [municipalityId], references: [id], onDelete: Cascade)
+  municipalityId String       @db.ObjectId
+
+  superAdmins   User[]   @relation(name: "UserSuperAdminSchools", fields: [superAdminIds], references: [id])
+  superAdminIds String[] @db.ObjectId
+
+  users      User[]      @relation()
+  subjects   Subject[]
+  timeTables TimeTable[]
+}
+
+model Employee {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  name   String  @unique
+  isActive Boolean @default(true)
+
+  qualification Json?
+  functions     Json?
+
+  position      String?
+  positionSize  Int?
+  positionLeave Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subject {
+  id                  String      @id @default(auto()) @map("_id") @db.ObjectId
+  name                String
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  createdBy           String?
+  updatedBy           String?
+  school              School      @relation(fields: [schoolId], references: [id])
+  schoolId            String      @db.ObjectId
+  lessonCountSchool   Json
+  lessonCountNational Json
+  timeTables          TimeTable[]
+  
+}
+
+model TimeTable {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  grade     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?  @db.ObjectId
+  updatedBy String?  @db.ObjectId
+  school    School   @relation(fields: [schoolId], references: [id])
+  schoolId  String   @db.ObjectId
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subjectId String   @db.ObjectId
+  isActive Boolean @default(true)
+
+}
+
+model Log {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  user           User     @relation(fields: [userId], references: [id])
+  userId         String   @db.ObjectId
+  actionType     String
+  entityType     String? // The type of entity affected (e.g., 'User', 'School')
+  entityId       String? // The ID of the entity affected
+  before         Json? // JSON representation of the state before the action
+  after          Json? // JSON representation of the state after the action
+  timestamp      DateTime @default(now())
+  ipAddress      String? // IP address of the user who performed the action
+  userAgent      String? // User agent string of the user who performed the action
+  additionalInfo Json? // Additional metadata or context in JSON format
+}
