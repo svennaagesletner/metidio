@@ -41,6 +41,7 @@ export default function DashboardMain() {
   //Set the selected school and municipality from the session
   useEffect(() => {
     if (!session) return
+    console.log(session)
     setSelectedSchool(session.user.school)
     setSelectedMunicipality(session.user.municipality)
   }, [session])
@@ -136,7 +137,9 @@ const handleSchoolChange =  async (value: any) => {
 
 if (isLoading) {
     return ( <Loading /> )
-}  
+}
+
+console.log(selectedSchool)
 
 return (
     <>

@@ -1,5 +1,5 @@
 import db from "@/lib/prismadb"
-import NextAuth, { type DefaultSession }  from "next-auth"
+import NextAuth from "next-auth"
 import GoogleProvider from "@auth/core/providers/google"
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs"
@@ -7,7 +7,7 @@ import { authConfig } from "./auth.config";
 import { PrismaAdapter} from "@auth/prisma-adapter"
 
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers: {GET, POST}, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(db),
   providers: [ 
