@@ -83,6 +83,7 @@ function ProfileMenu() {
                     {profileItems.map((item, index) => {
                         return (
                             <ProfileItem 
+                            key={item.name}
                             name={item.name}
                             href={item.href}
                             icon={item.icon}
