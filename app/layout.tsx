@@ -36,6 +36,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <SpeedInsights />
           </ThemeProvider>
         </SessionProvider>
         </NextUiProvider>
