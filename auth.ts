@@ -7,7 +7,7 @@ import { authConfig } from "./auth.config";
 import { PrismaAdapter} from "@auth/prisma-adapter"
 
 
-export const { handlers: {GET, POST}, auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(db),
   providers: [ 
@@ -44,6 +44,8 @@ export const { handlers: {GET, POST}, auth, signIn, signOut } = NextAuth({
         if (!isCorrectPassword) {
           throw new Error('Invalid credentials');
         }
+
+        console.log(user)
 
         return user;
       }

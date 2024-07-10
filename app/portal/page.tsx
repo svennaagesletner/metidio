@@ -1,8 +1,7 @@
 const Portal = () => {
-    
     return (
         <div className="">
-            Page asdf  
+            Velkommen til Metidio
         </div>
     );
 }

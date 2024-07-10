@@ -10,7 +10,7 @@ export const NavigationTopbar = async () => {
                 <div className="flex items-center">
                 <NavHeader />
                 </div>
-                <div className="flex items-center px-8">
+                <div className="flex items-center mr-4">
                 <ProfileMenu 
                 />
                 </div>

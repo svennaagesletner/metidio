@@ -32,6 +32,7 @@
     "@tanstack/react-query-devtools": "^5.17.9",
     "@tanstack/react-table": "^8.11.6",
     "@types/next-auth": "^3.15.0",
+    "@vercel/speed-insights": "^1.0.12",
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",

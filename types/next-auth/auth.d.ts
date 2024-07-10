@@ -11,6 +11,7 @@ declare module "next-auth" {
       municipality: string
       municipalityId: string
       selectionFilter: boolean
+      schoolId: string
       school: string
       isActive: boolean
       accessLevel: number

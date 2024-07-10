@@ -11,7 +11,7 @@ export const authConfig = {
         token.role = user?.role
         token.municipality = user.municipality?.name
         token.municipalityId = user.municipalityId
-        token.school = user?.school?.name
+        token.school = user.school.name
         token.isActive = user?.isActive
 
         if (user.role == "SuperAdmin") token.accessLevel = 6
@@ -42,6 +42,7 @@ export const authConfig = {
       token: JWT
     }): any => {
 
+      console.log("user", user)
 
       const updatedSession = {
         ...session,

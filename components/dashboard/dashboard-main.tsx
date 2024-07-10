@@ -20,12 +20,13 @@ import { School, Municipality, User } from "@prisma/client";
 
   };
 
-export default function DashboardMain() {
+export default function DashboardMain({dashboardData}: {dashboardData: dashboardData}) {
 
   //React query
   const {data, error, isLoading} = useQuery<dashboardData>({
     queryKey: ['dashboard'],
-    queryFn: async () => await getDashboardData()
+    queryFn: async () => await getDashboardData(),
+    initialData: dashboardData
   })
 
 

@@ -6,6 +6,7 @@ import { SessionProvider } from "next-auth/react"
 import {NextUiProvider} from "@/components/providers/nextUi-provider";
 import { ReactQueryProvider } from '@/components/providers/reactQuery-provider'
 import { Toaster } from 'sonner';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ['latin'] })
 

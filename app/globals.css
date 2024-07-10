@@ -119,6 +119,10 @@ html, body, :root {
   .select-field {
     @apply dark:hover:bg-emerald-600 hover:bg-emerald-500 bg-neutral-100 dark:bg-neutral-800
   }
+
+  .dark-background {
+    @apply dark:bg-[#1E1F22]
+  }
 }
 
 .linedDiv {
